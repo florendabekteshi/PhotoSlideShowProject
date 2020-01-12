@@ -168,64 +168,6 @@ namespace PhotoSlideshow.Models
 
         }
       
-       public void Mutate(List<Slide> slides)
-        {
-            List<int> randomNumbers = new List<int>();
-            for (int ii = 0; ii < this.Slides.Count(); ii++)
-            {
-                randomNumbers.Add(ii);
-            }
-            Random random = new Random();
-            int swapOrChange = random.Next(0, 9);
-            List<int> slidesToSwap = slides.Where(x => x.Photos.Count == 2).OrderBy(x => random.Next()).Select(x => x.Id).Take(2).ToList();
-            
-            {
-                if (swapOrChange < 5 && slidesToSwap.Count == 2)
-                {
-                    int firstSlidePhotoIndex = random.Next(0, 2);
-                    int secondSlidePhotoIndex = random.Next(0, 2);
-
-                    int firstSlideIndex = slides.IndexOf(slides.FirstOrDefault(x => x.Id == slidesToSwap.FirstOrDefault()));
-                    int secondSlideIndex = slides.IndexOf(slides.FirstOrDefault(x => x.Id == slidesToSwap.LastOrDefault()));
-
-                    List<Photo> firstSlidePhotos = new List<Photo>
-                {
-                    new Photo(slides[firstSlideIndex].Photos.FirstOrDefault().Id, Orientation.V, new List<string>(slides[firstSlideIndex].Photos.FirstOrDefault().Tags)),
-                    new Photo(slides[firstSlideIndex].Photos.LastOrDefault().Id, Orientation.V, new List<string>(slides[firstSlideIndex].Photos.LastOrDefault().Tags))
-                };
-
-                    List<Photo> secondSlidePhotos = new List<Photo>
-                {
-                    new Photo(slides[secondSlideIndex].Photos.FirstOrDefault().Id, Orientation.V, new List<string>(slides[secondSlideIndex].Photos.FirstOrDefault().Tags)),
-                    new Photo(slides[secondSlideIndex].Photos.LastOrDefault().Id, Orientation.V, new List<string>(slides[secondSlideIndex].Photos.LastOrDefault().Tags))
-                };
-
-                    Slide slideA = new Slide(slides[firstSlideIndex].Id, firstSlidePhotos);
-                    Slide slideB = new Slide(slides[secondSlideIndex].Id, secondSlidePhotos);
-
-                    slideA.Photos[firstSlidePhotoIndex] = slides[secondSlideIndex].Photos[secondSlidePhotoIndex];
-                    slideB.Photos[secondSlidePhotoIndex] = slides[firstSlideIndex].Photos[firstSlidePhotoIndex];
-
-                    slides[firstSlideIndex] = slideA;
-                    slides[secondSlideIndex] = slideB;
-                }
-                /* else 
-                 {
-                     slidesToSwap = randomNumbers.OrderBy(x => random.Next()).Take(2).ToList();
-                     Slide tempSlide = slides[slidesToSwap.FirstOrDefault()];
-                     slides[slidesToSwap.FirstOrDefault()] = slides[slidesToSwap.LastOrDefault()];
-                     slides[slidesToSwap.LastOrDefault()] = tempSlide;
-                 } */
-                else
-                {
-                    slidesToSwap = randomNumbers;
-                    Slide slide = slides[slidesToSwap.FirstOrDefault()];
-                    slides.RemoveAt(slidesToSwap.FirstOrDefault());
-                    slides.Insert(slidesToSwap.LastOrDefault(), slide);
-                }
-            }
-        }
-       
         public void Mutate1(List<Slide> slides)
         {
             Random rnd = new Random();
